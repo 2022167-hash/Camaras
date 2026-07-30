@@ -1,6 +1,15 @@
 const bcrypt = require('bcryptjs');
 const express = require('express');
-import dotenv from 'dotenv';
+const cloudinary = require("cloudinary").v2;
+const jwt = require('jsonwebtoken');
+
+require('dotenv').config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET
+});
 dotenv.config();
 const app = express();
 
@@ -11,7 +20,7 @@ app.use(express.json());
 const multer = require("multer");
 
 const upload = multer({
-    dest:"uploads/"
+    storage: multer.memoryStorage()
 });
 //++++++++++++++++++++++++++++++//
 
@@ -22,7 +31,6 @@ const Camara = require('./camaraEsquema');
 const conectarBD = require("./conexion")
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static('uploads'));
 async function iniciarServidor() {
 await conectarBD();
 }
@@ -124,10 +132,7 @@ app.delete('/api/usuarios/:id', async (req, res) => {
 });
 
 //CRUD
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor API escuchando en http://localhost:${PORT}`);
-});
+module.exports = app;
 // 
 
 app.get('/api/camaras', verificarToken, async (req, res) => {
@@ -170,6 +175,33 @@ app.get('/api/camaras/:id', verificarToken, async (req, res) => {
     });
   }
 });
+let urlDeCloudinary = null;
+
+if(req.file){
+
+    const resultado = await new Promise((resolve,reject)=>{
+
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder:"camaras"
+            },
+            (error,result)=>{
+
+                if(error){
+                    reject(error);
+                }else{
+                    resolve(result);
+                }
+
+            }
+        );
+
+        stream.end(req.file.buffer);
+
+    });
+
+    urlDeCloudinary = resultado.secure_url;
+}
 
 // Crear una nueva camara
 
@@ -179,119 +211,81 @@ verificarToken,
 upload.single("miArchivo"),
 async (req,res)=>{
 
-    console.log("Archivo recibido:");
-    console.log(req.file);
-
-    console.log("Datos recibidos:");
-    console.log(req.body);
+try {
 
 
-    try {
-
-        const {
-            marca,
-            modelo,
-            tipo,
-            formato,
-            resolucion,
-            estado,
-            precioEstimado,
-            observaciones
-        } = req.body;
+let urlDeCloudinary = null;
 
 
-        const nuevaCamara = new Camara({
+if(req.file){
 
-            creador:req.usuarioId,
+const resultado = await new Promise((resolve,reject)=>{
 
-            marca,
-            modelo,
-            tipo,
-            formato,
-            resolucion,
-            estado,
+const stream = cloudinary.uploader.upload_stream(
+{
+folder:"camaras"
+},
+(error,result)=>{
 
-            precioEstimado:Number(precioEstimado),
-
-            observaciones,
-
-            imagenUrl:req.file 
-                ? req.file.path 
-                : null
-        });
-
-
-        const camaraGuardada = await nuevaCamara.save();
-
-
-        res.status(201).json(camaraGuardada);
-
-
-    } catch(error){
-
-        console.error("Error al crear camara:",error);
-
-        res.status(400).json({
-            error:"Error al crear la camara"
-        });
-
-    }
+if(error){
+reject(error);
+}else{
+resolve(result);
+}
 
 });
 
-// Actualizar una camara existente
-app.put('/api/camaras/:id', verificarToken, async (req, res) => {
-  try {
-    const {
-      marca,
-      modelo,
-      tipo,
-      formato,
-      resolucion,
-      estado,
-      precioEstimado,
-      observaciones,
-      imagenUrl
-    } = req.body;
- 
-    const camaraActualizada = await Camara.findOneAndUpdate(
-      {
-        _id: req.params.id
-      },
-      {
-        marca,
-        modelo,
-        tipo,
-        formato,
-        resolucion,
-        estado,
-        precioEstimado,
-        observaciones,
-        imagenUrl
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
- 
-    if (!camaraActualizada) {
-      return res.status(404).json({
-        error: 'Camara no encontrada'
-      });
-    }
- 
-    res.json(camaraActualizada);
- 
-  } catch (error) {
-    console.error('Error al actualizar camara:', error);
- 
-    res.status(400).json({
-      error: 'Error al actualizar la camara'
-    });
-  }
+
+stream.end(req.file.buffer);
+
+
 });
- 
+
+
+urlDeCloudinary = resultado.secure_url;
+
+}
+
+
+
+const nuevaCamara = new Camara({
+
+creador:req.usuarioId,
+
+marca:req.body.marca,
+modelo:req.body.modelo,
+tipo:req.body.tipo,
+formato:req.body.formato,
+resolucion:req.body.resolucion,
+estado:req.body.estado,
+
+precioEstimado:Number(req.body.precioEstimado),
+
+observaciones:req.body.observaciones,
+
+imagenUrl:urlDeCloudinary
+
+});
+
+
+const camaraGuardada = await nuevaCamara.save();
+
+
+res.status(201).json(camaraGuardada);
+
+
+}catch(error){
+
+console.error(error);
+
+res.status(400).json({
+error:"Error al crear la camara"
+});
+
+}
+
+
+});
 // Eliminar una camara
 app.delete('/api/camaras/:id', verificarToken, async (req, res) => {
   try {
@@ -318,7 +312,6 @@ app.delete('/api/camaras/:id', verificarToken, async (req, res) => {
   });
 
 //
-const jwt = require('jsonwebtoken');
  
 // Login de usuario (autenticación)
 app.post('/api/login', async (req, res) => {
