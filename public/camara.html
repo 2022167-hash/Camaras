@@ -300,7 +300,6 @@ table tr:hover {
         <table id="tabla-camaras">
     <thead>
         <tr>
-          <th>Imagen</th>
             <th>Marca</th>
             <th>Modelo</th>
             <th>Tipo</th>
@@ -327,10 +326,6 @@ table tr:hover {
 <script>
     const API_CAMARAS = '/api/camaras';
     
-    
- 
-
-  const imagen = document.getElementById("archivo");
   const marcaPicker = document.getElementById("marca-picker");
   const modeloPicker = document.getElementById("modelo-picker");
   const tipoPicker = document.getElementById("tipo-picker");
@@ -470,20 +465,7 @@ const modoEdicion = document.getElementById("modo-edicion");
  
     async function guardarCamara() {
 
-      const archivo = imagen.files[0];
-
-      if (!archivo) {
-    mostrarMensaje("Seleccione una imagen.", true);
-    return;
-}
-
-if (!archivo.type.startsWith("image/")) {
-    mostrarMensaje("Debe seleccionar una imagen.", true);
-    return;
-}
-
           const formData = new FormData();
-formData.append("miArchivo", imagen.files[0]);
 formData.append("marca", marcaPicker.value);
 formData.append("modelo", modeloPicker.value);
 formData.append("tipo", tipoPicker.value);
