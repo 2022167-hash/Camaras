@@ -472,7 +472,7 @@ const respuesta = await fetch(API_CAMARAS, {
  
     async function guardarCamara() {
 
-          const camara = obtenerCamaraActual();
+      const camara = obtenerCamaraActual();
 
 const respuesta = await fetch(url, {
     method: metodo,
@@ -482,11 +482,6 @@ const respuesta = await fetch(url, {
     },
     body: JSON.stringify(camara)
 });
-
-
-
-
- 
 
       try {
         btnGuardar.disabled = true;
