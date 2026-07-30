@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const express = require('express');
+const jwt = require('jsonwebtoken');
 import dotenv from 'dotenv';
 dotenv.config();
 const app = express();
@@ -305,7 +306,7 @@ app.delete('/api/camaras/:id', verificarToken, async (req, res) => {
   });
 
 //
-const jwt = require('jsonwebtoken');
+
  
 // Login de usuario (autenticación)
 app.post('/api/login', async (req, res) => {
