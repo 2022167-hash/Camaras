@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f5f9;
+    color: #333;
+    padding: 40px;
+}
+
+.contenedor-principal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 1300px;
+    margin: auto;
+}
+
+.panel {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+
+h1,
+h2 {
+    text-align: center;
+    color: #1f3c88;
+    margin-bottom: 25px;
+}
+
+.oculto {
+    display: none;
+}
+
+#modo-edicion {
+    text-align: center;
+    background: #fff4cc;
+    color: #8a6d00;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.camara-container {
+    margin-bottom: 30px;
+}
+
+.camara-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #1f3c88;
+    border-radius: 10px;
+    background: #f8f9ff;
+}
+
+.informacion-camara {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.informacion-camara label {
+    font-weight: bold;
+    color: #1f3c88;
+}
+
+.informacion-camara input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: .3s;
+    font-size: 15px;
+}
+
+.informacion-camara input:focus {
+    border-color: #1f3c88;
+    box-shadow: 0 0 5px rgba(31,60,136,.3);
+}
+
+button {
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+#btn-guardar {
+    background: #1f3c88;
+    color: white;
+}
+
+#btn-guardar:hover {
+    background: #17316f;
+}
+
+#btn-limpiar {
+    background: #ff9800;
+    color: white;
+}
+
+#btn-limpiar:hover {
+    background: #e68900;
+}
+
+#btn-cancelar {
+    background: #d32f2f;
+    color: white;
+}
+
+#btn-cancelar:hover {
+    background: #b71c1c;
+}
+
+button[type="submit"] {
+    background: #4caf50;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background: #388e3c;
+}
+
+#mensaje {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: green;
+}
+
+.tabla-contenedor {
+    min-height: 400px;
+    border: 2px dashed #d5d5d5;
+    border-radius: 10px;
+    padding: 20px;
+    background: #fafafa;
+    overflow-x: auto;
+}
+
+/* Tabla */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    background: #1f3c88;
+    color: white;
+    padding: 12px;
+}
+
+table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+table tr:nth-child(even) {
+    background: #f4f6fb;
+}
+
+table tr:hover {
+    background: #e8efff;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .contenedor-principal {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        padding: 20px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+}
+    </style>
+</head>
+<body>
+    <main class="contenedor-principal">
+ 
+    <section class="panel">
+ 
+      <h1>Publica tu camara</h1>
+ 
+      <p id="modo-edicion" class="oculto">
+        Está editando una camara guardada.
+      </p>
+ 
+      <div class="camara-container">
+        <label for="archivo">Sube la foto de tu camara:</label>
+        <input type="file" id="archivo" name="miArchivo">
+      </div>
+ 
+      <div class="informacion-camara">
+ 
+        <label for="marca-picker">Elija marca</label>
+ 
+        <input
+          type="text"
+          id="marca-picker"
+          placeholder="Marca de la camara">
+ 
+        <label for="modelo-picker">Elija modelo</label>
+
+        <input
+          type="text"
+          id="modelo-picker"
+          placeholder="Modelo de la camara">
+
+        <label for="tipo-picker">Elija tipo</label>
+
+        <input
+          type="text"
+          id="tipo-picker"
+          placeholder="Tipo de la camara">
+
+        <label for="formato-picker">Elija formato</label>
+
+        <input
+          type="text"
+          id="formato-picker"
+          placeholder="Formato de la camara">
+
+        <label for="resolucion-picker">Elija resolucion</label>
+
+        <input
+          type="text"
+          id="resolucion-picker"
+          placeholder="Resolucion de la camara">
+
+        <label for="estado-picker">Elija estado</label>
+
+        <input
+          type="text"
+          id="estado-picker"
+          placeholder="Estado de la camara">
+
+        <label for="precio-picker">Elija precio estimado</label>
+
+        <input
+          type="number"
+          id="precio-picker"
+          placeholder="Precio estimado de la camara">
+
+        <label for="observaciones-picker">Elija observaciones</label>
+
+        <input
+          type="text"
+          id="observaciones-picker"
+          placeholder="Observaciones de la camara">
+
+
+        <button type="button" id="btnGuardar">
+          Guardar cámara
+        </button>
+ 
+        <button type="button" id="btnLimpiar">
+          Reiniciar colores
+        </button>
+ 
+        <button type="button" id="btnCancelar" class="oculto">
+          Cancelar edición
+        </button>
+ 
+      </div>
+ 
+      <div id="mensaje"></div>
+ 
+    </section>
+ 
+    <section class="panel">
+ 
+      <h2>Mis camaras guardadas</h2>
+      
+ 
+      <div class="tabla-contenedor">
+        <table id="tabla-camaras">
+    <thead>
+        <tr>
+          <th>Imagen</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Tipo</th>
+            <th>Formato</th>
+            <th>Resolución</th>
+            <th>Estado</th>
+            <th>Precio</th>
+            <th>Observaciones</th>
+            <th>Fecha de creación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody id="lista-camaras">
+
+    </tbody>
+</table>
+      </div>
+ 
+    </section>
+ 
+  </main>
+</body>
+<script>
+    const API_CAMARAS = '/api/camaras';
+    
+    
+ 
+
+  const imagen = document.getElementById("archivo");
+  const marcaPicker = document.getElementById("marca-picker");
+  const modeloPicker = document.getElementById("modelo-picker");
+  const tipoPicker = document.getElementById("tipo-picker");
+  const formatoPicker = document.getElementById("formato-picker");
+  const resolucionPicker = document.getElementById("resolucion-picker");
+  const estadoPicker = document.getElementById("estado-picker");
+  const precioPicker = document.getElementById("precio-picker");
+  const observacionesPicker = document.getElementById("observaciones-picker");
+
+  const btnGuardar = document.getElementById("btnGuardar");
+const btnLimpiar = document.getElementById("btnLimpiar");
+const btnCancelar = document.getElementById("btnCancelar");
+const listaCamaras = document.getElementById("lista-camaras");
+const mensaje = document.getElementById("mensaje");
+const modoEdicion = document.getElementById("modo-edicion");
+
+
+  let camaraEditandoId = null;
+ 
+ 
+    document.addEventListener('DOMContentLoaded', iniciarPagina);
+ 
+ 
+    async function iniciarPagina(){
+
+    const sesionValida = await verificarSesion();
+
+    if(!sesionValida){
+        return;
+    }
+
+    configurarEventos();
+
+    await cargarCamaras();
+
+}
+ 
+ 
+    function obtenerToken() {
+      return localStorage.getItem('token');
+    }
+ 
+ 
+    function obtenerHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + obtenerToken()
+      };
+    }
+ 
+ 
+    async function verificarSesion() {
+      const token = obtenerToken();
+ 
+      if (!token) {
+        regresarAlLogin();
+        return false;
+      }
+ 
+      try {
+        const respuesta = await fetch('/api/verificatoken', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+ 
+        if (!respuesta.ok) {
+          regresarAlLogin();
+          return false;
+        }
+ 
+        return true;
+ 
+      } catch (error) {
+        console.error('Error verificando la sesión:', error);
+        regresarAlLogin();
+        return false;
+      }
+    }
+ 
+ 
+    function regresarAlLogin() {
+      localStorage.removeItem('token');
+      window.location.replace('login.html');
+    }
+ 
+ 
+    async function procesarRespuesta(respuesta) {
+      if (respuesta.status === 401 || respuesta.status === 403) {
+        regresarAlLogin();
+        throw new Error('La sesión expiró');
+      }
+ 
+      let datos = {};
+ 
+      try {
+        datos = await respuesta.json();
+      } catch (error) {
+        datos = {};
+      }
+ 
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.error || 'No fue posible completar la operación'
+        );
+      }
+ 
+      return datos;
+    }
+ 
+ 
+   function configurarEventos() {
+
+    btnGuardar.addEventListener("click", guardarCamara);
+    btnLimpiar.addEventListener("click", reiniciarFormulario);
+    btnCancelar.addEventListener("click", reiniciarFormulario);
+
+    
+
+}
+ 
+    function obtenerCamaraActual() {
+    return {
+        marca: marcaPicker.value,
+        modelo: modeloPicker.value,
+        tipo: tipoPicker.value,
+        formato: formatoPicker.value,
+        resolucion: resolucionPicker.value,
+        estado: estadoPicker.value,
+        precioEstimado: Number(precioPicker.value),
+        observaciones: observacionesPicker.value,
+    };
+}
+
+
+ 
+    async function guardarCamara() {
+
+      const archivo = imagen.files[0];
+
+      if (!archivo) {
+    mostrarMensaje("Seleccione una imagen.", true);
+    return;
+}
+
+if (!archivo.type.startsWith("image/")) {
+    mostrarMensaje("Debe seleccionar una imagen.", true);
+    return;
+}
+
+          const formData = new FormData();
+formData.append("miArchivo", imagen.files[0]);
+formData.append("marca", marcaPicker.value);
+formData.append("modelo", modeloPicker.value);
+formData.append("tipo", tipoPicker.value);
+formData.append("formato", formatoPicker.value);
+formData.append("resolucion", resolucionPicker.value);
+formData.append("estado", estadoPicker.value);
+formData.append("precioEstimado", precioPicker.value);
+formData.append("observaciones", observacionesPicker.value);
+
+
+
+
+ 
+
+      try {
+        btnGuardar.disabled = true;
+ 
+
+        const camara = obtenerCamaraActual();
+if (!camara.marca.trim()) {
+    mostrarMensaje("Ingrese la marca.", true);
+    return;
+}
+
+if (!camara.modelo.trim()) {
+    mostrarMensaje("Ingrese el modelo.", true);
+    return;
+}
+
+if (!camara.tipo.trim()) {
+    mostrarMensaje("Ingrese el tipo.", true);
+    return;
+}
+
+if (camara.precioEstimado <= 0) {
+    mostrarMensaje("Ingrese un precio válido.", true);
+    return;
+}
+ 
+        let url = API_CAMARAS;
+        let metodo = 'POST';
+ 
+        if (camaraEditandoId) {
+          url = API_CAMARAS + '/' + camaraEditandoId;
+          metodo = 'PUT';
+        }
+ 
+        const respuesta = await fetch(url, {
+          method: metodo,
+          headers: {
+    Authorization: "Bearer " + obtenerToken()
+},
+body: formData
+        });
+ 
+        await procesarRespuesta(respuesta);
+ 
+        mostrarMensaje(
+          camaraEditandoId
+            ? 'Cámara actualizada correctamente.'
+            : 'Cámara guardada correctamente.'
+        );
+ 
+        reiniciarFormulario(false);
+        await cargarCamaras();
+ 
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje(error.message, true);
+ 
+      } finally {
+        btnGuardar.disabled = false;
+      }
+    }
+ 
+ 
+    async function cargarCamaras(){
+      
+
+    try{
+
+        const respuesta = await fetch(API_CAMARAS,{
+            method:"GET",
+            headers:{
+    Authorization:"Bearer " + obtenerToken()
+}
+        });
+
+        const camaras = await procesarRespuesta(respuesta);
+
+        mostrarCamaras(camaras);
+
+    }catch(error){
+
+        mostrarMensaje(error.message,true);
+
+    }
+
+}
+ 
+ 
+    function mostrarCamaras(camaras){
+      console.log("Mostrando cámaras:", camaras);
+
+
+    listaCamaras.innerHTML="";
+
+    camaras.forEach(camara=>{
+
+      const fecha = new Date(camara.fechaCreacion).toLocaleDateString("es-CR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+});
+
+        const fila=document.createElement("tr");
+
+        fila.innerHTML=`
+
+        <td>
+    ${
+      camara.imagenUrl
+      ? `<img 
+          src="/${camara.imagenUrl}" 
+          width="100"
+          height="80"
+          style="object-fit:cover;border-radius:8px;"
+        >`
+      : "Sin imagen"
+    }
+</td>
+
+        <td>${camara.marca}</td>
+        <td>${camara.modelo}</td>
+        <td>${camara.tipo}</td>
+        <td>${camara.formato}</td>
+        <td>${camara.resolucion}</td>
+        <td>${camara.estado}</td>
+        <td>${camara.precioEstimado}</td>
+        <td>${fecha}</td>
+        <td>${camara.observaciones}</td>
+
+        <td>
+
+            <button onclick="editarCamara('${camara._id}')">
+
+            Editar
+
+            </button>
+
+            <button onclick="eliminarCamara('${camara._id}')">
+
+            Eliminar
+
+            </button>
+
+        </td>
+
+        `;
+
+        listaCamaras.appendChild(fila);
+
+    });
+
+}
+ 
+    async function editarCamara(id){
+
+    try{
+
+        const respuesta = await fetch(API_CAMARAS + "/" + id,{
+            headers: obtenerHeaders()
+        });
+
+        const camara = await procesarRespuesta(respuesta);
+
+        camaraEditandoId = camara._id;
+
+        marcaPicker.value = camara.marca;
+        modeloPicker.value = camara.modelo;
+        tipoPicker.value = camara.tipo;
+        formatoPicker.value = camara.formato;
+        resolucionPicker.value = camara.resolucion;
+        estadoPicker.value = camara.estado;
+        precioPicker.value = camara.precioEstimado;
+        observacionesPicker.value = camara.observaciones;
+
+        btnGuardar.textContent = "Actualizar cámara";
+
+        btnCancelar.classList.remove("oculto");
+        modoEdicion.classList.remove("oculto");
+
+    }catch(error){
+
+        mostrarMensaje(error.message,true);
+
+    }
+
+}
+ 
+ 
+    async function eliminarCamara(id){
+
+    if(!confirm("¿Eliminar cámara?")){
+        return;
+    }
+
+    try{
+
+        const respuesta = await fetch(API_CAMARAS + "/" + id,{
+            method:"DELETE",
+            headers:obtenerHeaders()
+        });
+
+        await procesarRespuesta(respuesta);
+
+        await cargarCamaras();
+
+        mostrarMensaje("Cámara eliminada correctamente.");
+
+    }catch(error){
+
+        mostrarMensaje(error.message,true);
+
+    }
+
+}
+ 
+ 
+    function reiniciarFormulario(){
+
+    marcaPicker.value="";
+    modeloPicker.value="";
+    tipoPicker.value="";
+    formatoPicker.value="";
+    resolucionPicker.value="";
+    estadoPicker.value="";
+    precioPicker.value="";
+    observacionesPicker.value="";
+    imagen.value="";
+
+    camaraEditandoId = null;
+
+    btnGuardar.textContent="Guardar cámara";
+
+    btnCancelar.classList.add("oculto");
+
+    modoEdicion.classList.add("oculto");
+
+}
+ 
+ 
+    function mostrarMensaje(texto, esError = false){
+
+    mensaje.textContent = texto;
+
+    mensaje.className = esError
+        ? "mensaje-error"
+        : "mensaje-correcto";
+
+    setTimeout(()=>{
+        limpiarMensaje();
+    },3000);
+
+}
+ 
+ 
+    function limpiarMensaje() {
+      mensaje.textContent = '';
+      mensaje.className = '';
+    }
+
+
+</script>
+</html>

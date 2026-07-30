@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel de camaras</title>
+    <style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+.carrusel-contenedor{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.carrusel-ventana{
+    width: 500px;
+    height: 350px;
+    overflow: hidden;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carrusel img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.boton-carrusel{
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.boton-carrusel:hover{
+    background: #0056b3;
+}
+
+#mensaje{
+    margin-top:20px;
+    color:red;
+}
+</style>
+</head>
+<body>
+    <h1>Revise las camaras</h1>
+ 
+  <div class="carrusel-contenedor">
+ 
+    <button
+      type="button"
+      id="btn-anterior"
+      class="boton-carrusel boton-anterior">
+      &#10094;
+    </button>
+ 
+    <div class="carrusel-ventana">
+      <div id="carrusel" class="carrusel"></div>
+    </div>
+ 
+    <button
+      type="button"
+      id="btn-siguiente"
+      class="boton-carrusel boton-siguiente">
+      &#10095;
+    </button>
+ 
+  </div>
+ 
+  <div id="mensaje"></div>
+ 
+
+</body>
+  <script>
+    const API_CAMARAS = '/api/camaras';
+
+    const carrusel = document.getElementById('carrusel');
+    const btnAnterior = document.getElementById('btn-anterior');
+    const btnSiguiente = document.getElementById('btn-siguiente');
+
+    let camaras = [];
+    let indiceActual = 0;
+
+    function obtenerToken() {
+      return localStorage.getItem('token');
+    }
+ 
+ 
+    function obtenerHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + obtenerToken()
+      };
+    }
+ 
+ 
+    async function verificarSesion() {
+      const token = obtenerToken();
+ 
+      if (!token) {
+        regresarAlLogin();
+        return false;
+      }
+ 
+      try {
+        const respuesta = await fetch('/api/verificatoken', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+ 
+        if (!respuesta.ok) {
+          regresarAlLogin();
+          return false;
+        }
+ 
+        return true;
+ 
+      } catch (error) {
+        console.error('Error verificando la sesión:', error);
+        regresarAlLogin();
+        return false;
+      }
+    }
+
+    async function obtenerCamaras() {
+    try {
+
+        const response = await fetch(API_CAMARAS, {
+            method: 'GET',
+            headers: obtenerHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las cámaras');
+        }
+
+        camaras = await response.json();
+
+        console.table(camaras);
+
+        mostrarCarrusel();
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById('mensaje').textContent = 'Error al cargar las cámaras';
+    }
+}
+
+    function mostrarCarrusel() {
+
+    carrusel.innerHTML = '';
+
+    if (camaras.length === 0) {
+        carrusel.textContent = "No hay cámaras";
+        return;
+    }
+
+    const camaraActual = camaras[indiceActual];
+
+    const tarjeta = document.createElement("div");
+
+    console.log("Ruta imagen:", camaraActual.imagen);
+
+    const img = document.createElement("img");
+    img.src = camaraActual.imagenUrl;
+    img.alt = camaraActual.marca;
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = `${camaraActual.marca} ${camaraActual.modelo}`;
+
+    tarjeta.appendChild(img);
+    tarjeta.appendChild(titulo);
+
+    carrusel.appendChild(tarjeta);
+}
+
+    btnAnterior.addEventListener('click', () => {
+      if (camaras.length > 0) {
+        indiceActual = (indiceActual - 1 + camaras.length) % camaras.length;
+        mostrarCarrusel();
+      }
+    });
+
+    btnSiguiente.addEventListener('click', () => {
+      if (camaras.length > 0) {
+        indiceActual = (indiceActual + 1) % camaras.length;
+        mostrarCarrusel();
+      }
+    });
+
+    obtenerCamaras();
+
+  </script>
+</html>

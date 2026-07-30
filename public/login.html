@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso al Sistema</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg, #4facfe, #00f2fe);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .contenedor{
+            background:#fff;
+            width:450px;              /* Más ancho */
+            padding:40px;
+            border-radius:15px;       /* Bordes redondeados */
+            box-shadow:0 8px 20px rgba(0,0,0,.2);
+            text-align:center;
+        }
+
+        h1{
+            color:#333;
+            margin-bottom:30px;
+            font-size:30px;
+        }
+
+        h2{
+            text-align:left;
+            font-size:16px;
+            color:#555;
+            margin:18px 0 8px;
+        }
+
+        input[type="text"],
+        input[type="password"]{
+            width:100%;
+            padding:13px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            outline:none;
+            font-size:16px;
+            transition:.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus{
+            border-color:#4facfe;
+            box-shadow:0 0 8px rgba(79,172,254,.4);
+        }
+
+        input[type="button"]{
+            width:100%;
+            margin-top:30px;
+            padding:13px;
+            background:#4facfe;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:17px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        input[type="button"]:hover{
+            background:#2196f3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Ingreso al Sistema</h1>
+
+        <h2>Correo electrónico</h2>
+        <input type="text" placeholder="Escriba el email" id="email">
+
+        <h2>Contraseña</h2>
+        <input type="password" placeholder="Escriba la contraseña" id="clave">
+
+        <input type="button" id="btn-guardar" value="Ingresar">
+
+    </div>
+
+    <script>
+        const btnGuardar = document.getElementById('btn-guardar');
+
+        btnGuardar.addEventListener('click', async () => {
+
+            const usuario = {
+                email: document.getElementById('email').value,
+                clave: document.getElementById('clave').value
+            };
+
+            const resp = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            });
+
+            const data = await resp.json();
+            console.log('Respuesta:', data);
+
+            if (data.error != undefined) {
+                alert(data.error);
+            } else {
+                localStorage.setItem("token", data.token);
+                location.href = "index.html";
+            }
+
+        });
+
+        
+    </script>
+
+</body>
+</html>

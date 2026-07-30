@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg, #5dade2, #48c9b0);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .contenedor{
+            background:white;
+            width:460px;
+            padding:40px;
+            border-radius:15px;
+            box-shadow:0 8px 20px rgba(0,0,0,.2);
+            text-align:center;
+        }
+
+        h1{
+            color:#2c3e50;
+            margin-bottom:30px;
+            font-size:30px;
+        }
+
+        h2{
+            text-align:left;
+            font-size:16px;
+            color:#555;
+            margin:18px 0 8px;
+        }
+
+        input[type="text"],
+        input[type="password"]{
+            width:100%;
+            padding:13px;
+            border:1px solid #cfd8dc;
+            border-radius:8px;
+            font-size:16px;
+            outline:none;
+            transition:.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus{
+            border-color:#48c9b0;
+            box-shadow:0 0 8px rgba(72,201,176,.4);
+        }
+
+        input[type="button"]{
+            width:100%;
+            margin-top:30px;
+            padding:14px;
+            background:#48c9b0;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:17px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        input[type="button"]:hover{
+            background:#17a589;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Registro de Usuario</h1>
+
+        <h2>Nombre</h2>
+        <input id="nombre" type="text" placeholder="Escriba su nombre">
+
+        <h2>Correo electrónico</h2>
+        <input id="email" type="text" placeholder="Escriba su email">
+
+        <h2>Contraseña</h2>
+        <input id="clave" type="password" placeholder="Escriba su clave">
+
+        <input type="button" value="Registrarse" id="btn-guardar">
+
+    </div>
+
+    <script>
+
+        const btnGuardar = document.getElementById('btn-guardar');
+
+        btnGuardar.addEventListener('click', async () => {
+
+            const usuario = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                clave: document.getElementById('clave').value,
+            };
+
+            const resp = await fetch('/api/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            });
+
+            const data = await resp.json();
+            console.log('Usuario guardado en servidor:', data);
+
+            if(data.error){
+                alert(data.error);
+            }else{
+                alert("Usuario registrado correctamente.");
+                location.href = "login.html"; // Cambia la ruta si tu página de login tiene otro nombre
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
+
+

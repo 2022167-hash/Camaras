@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camaras</title>
+    <style>
+    * {
+      box-sizing: border-box;
+    }
+ 
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      color: #222;
+    }
+ 
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 35px;
+      color: white;
+      background-color: #1f2937;
+    }
+ 
+    header h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+ 
+    .usuario-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+ 
+    .usuario-header span {
+      font-weight: bold;
+    }
+ 
+    .btn-logout {
+      padding: 9px 16px;
+      color: white;
+      background-color: #dc3545;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+ 
+    .btn-logout:hover {
+      background-color: #b02a37;
+    }
+ 
+    nav {
+      padding: 12px 35px;
+      background-color: white;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.12);
+    }
+ 
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+ 
+    nav a {
+      display: inline-block;
+      padding: 10px 18px;
+      color: #1f2937;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+ 
+    nav a:hover {
+      color: white;
+      background-color: #2563eb;
+    }
+ 
+    main {
+      max-width: 1050px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+ 
+    .panel {
+      padding: 28px;
+      margin-bottom: 25px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    }
+ 
+    .bienvenida {
+      text-align: center;
+    }
+ 
+    .bienvenida h2 {
+      margin-top: 0;
+      color: #2563eb;
+    }
+ 
+    .datos-usuario {
+      max-width: 550px;
+      margin: 25px auto 0;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+ 
+    .dato {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+    }
+ 
+    .dato:last-child {
+      border-bottom: none;
+    }
+ 
+    .dato strong {
+      color: #374151;
+    }
+ 
+    .opciones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+ 
+    .tarjeta {
+      padding: 25px;
+      text-align: center;
+      border-radius: 10px;
+      background-color: #f9fafb;
+      border: 1px solid #ddd;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+ 
+    .tarjeta:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 13px rgba(0, 0, 0, 0.15);
+    }
+ 
+    .tarjeta h3 {
+      margin-top: 0;
+      color: #1f2937;
+    }
+ 
+    .tarjeta p {
+      min-height: 45px;
+      color: #555;
+    }
+ 
+    .tarjeta a {
+      display: inline-block;
+      padding: 11px 20px;
+      color: white;
+      background-color: #2563eb;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+ 
+    .tarjeta a:hover {
+      background-color: #1d4ed8;
+    }
+ 
+    #mensaje {
+      min-height: 25px;
+      margin-top: 20px;
+      color: #dc3545;
+      text-align: center;
+      font-weight: bold;
+    }
+ 
+    .cargando {
+      color: #666;
+      text-align: center;
+    }
+ 
+    footer {
+      padding: 20px;
+      margin-top: 40px;
+      color: white;
+      background-color: #1f2937;
+      text-align: center;
+    }
+ 
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+ 
+      nav ul {
+        flex-direction: column;
+      }
+ 
+      nav a {
+        width: 100%;
+        text-align: center;
+      }
+ 
+      .opciones {
+        grid-template-columns: 1fr;
+      }
+ 
+      .dato {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <header>
+ 
+    <h1>CameraApp</h1>
+ 
+    <div class="usuario-header">
+ 
+      <span id="nombre-header">
+        Cargando usuario...
+      </span>
+ 
+      <button
+        type="button"
+        id="btn-logout"
+        class="btn-logout">
+ 
+        Cerrar sesión
+ 
+      </button>
+ 
+    </div>
+ 
+  </header>
+ 
+  <nav>
+ 
+    <ul>
+      <li>
+        <a href="index.html">
+          Inicio
+        </a>
+      </li>
+ 
+      <li>
+        <a href="camara.html">
+          crear y editar camaras
+        </a>
+      </li>
+ 
+      <li>
+        <a href="carrusel.html">
+          Buscar camaras
+        </a>
+      </li>
+ 
+      <li>
+        <a href="#" id="enlace-logout">
+          Cerrar sesión
+        </a>
+      </li>
+    </ul>
+ 
+  </nav>
+ 
+  <main>
+ 
+    <section class="panel bienvenida">
+ 
+      <h2 id="titulo-bienvenida">
+        Bienvenido 6 - 7
+      </h2>
+ 
+      <p>
+        Desde este menú puede diseñar, consultar, modificar,
+        eliminar y buscar camaras
+      </p>
+ 
+      <div id="cargando" class="cargando">
+        Cargando información del usuario...
+      </div>
+ 
+      <div id="datos-usuario" class="datos-usuario" hidden>
+ 
+        <div class="dato">
+          <strong>Identificador:</strong>
+          <span id="usuario-id"></span>
+        </div>
+ 
+        <div class="dato">
+          <strong>Nombre:</strong>
+          <span id="usuario-nombre"></span>
+        </div>
+ 
+        <div class="dato">
+          <strong>Correo electrónico:</strong>
+          <span id="usuario-email"></span>
+        </div>
+ 
+        <div class="dato">
+          <strong>Fecha de registro:</strong>
+          <span id="usuario-fecha"></span>
+        </div>
+ 
+      </div>
+ 
+      <div id="mensaje"></div>
+ 
+    </section>
+ 
+    <section class="panel">
+ 
+      <h2>Menú principal</h2>
+ 
+      <div class="opciones">
+ 
+        <article class="tarjeta">
+ 
+          <h3>CRUD de camaras</h3>
+ 
+          <p>
+            Cree nuevos diseños, consulte sus camaras,
+            edite colores o elimine diseños guardados.
+          </p>
+ 
+          <a href="camara.html">
+            Administrar camaras
+          </a>
+ 
+        </article>
+ 
+        <article class="tarjeta">
+ 
+          <h3>Carrusel de camaras</h3>
+ 
+          <p>
+            Observe las camaras disponibles en el sistema y busque
+            por nombre o inclusive por marca
+          </p>
+ 
+          <a href="carrusel.html">
+            Ver lista de camaras
+          </a>
+ 
+        </article>
+ 
+      </div>
+ 
+    </section>
+ 
+  </main>
+ 
+  <footer>
+    CameraAPP - Buscador de Camaras
+  </footer>
+</body>
+  <script>
+    const nombreHeader =
+      document.getElementById('nombre-header');
+ 
+    const tituloBienvenida =
+      document.getElementById('titulo-bienvenida');
+ 
+    const contenedorDatos =
+      document.getElementById('datos-usuario');
+ 
+    const elementoCargando =
+      document.getElementById('cargando');
+ 
+    const mensaje =
+      document.getElementById('mensaje');
+ 
+    const btnLogout =
+      document.getElementById('btn-logout');
+ 
+    const enlaceLogout =
+      document.getElementById('enlace-logout');
+ 
+ 
+    document.addEventListener(
+      'DOMContentLoaded',
+      iniciarPagina
+    );
+ 
+ 
+    async function iniciarPagina() {
+      const sesionValida = await verificarSesion();
+ 
+      if (!sesionValida) {
+        return;
+      }
+ 
+      configurarEventos();
+ 
+      await cargarUsuarioLogueado();
+    }
+ 
+ 
+    function configurarEventos() {
+      btnLogout.addEventListener('click', cerrarSesion);
+ 
+      enlaceLogout.addEventListener('click', function (evento) {
+        evento.preventDefault();
+        cerrarSesion();
+      });
+    }
+ 
+ 
+    function obtenerToken() {
+      return localStorage.getItem('token');
+    }
+ 
+ 
+    function obtenerHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + obtenerToken()
+      };
+    }
+ 
+ 
+    async function verificarSesion() {
+      const token = obtenerToken();
+ 
+      if (!token) {
+        regresarAlLogin();
+        return false;
+      }
+ 
+      try {
+        const respuesta = await fetch('/api/verificatoken', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+ 
+        if (!respuesta.ok) {
+          regresarAlLogin();
+          return false;
+        }
+ 
+        return true;
+ 
+      } catch (error) {
+        console.error(
+          'Error verificando la sesión:',
+          error
+        );
+ 
+        regresarAlLogin();
+ 
+        return false;
+      }
+    }
+ 
+ 
+    async function cargarUsuarioLogueado() {
+      try {
+        const respuesta = await fetch(
+          '/api/usuario-logueado',
+          {
+            method: 'GET',
+            headers: obtenerHeaders()
+          }
+        );
+ 
+        const usuario =
+          await procesarRespuesta(respuesta);
+ 
+        mostrarDatosUsuario(usuario);
+ 
+      } catch (error) {
+        console.error(error);
+ 
+        elementoCargando.hidden = true;
+ 
+        mostrarMensaje(error.message);
+      }
+    }
+ 
+ 
+    async function procesarRespuesta(respuesta) {
+      if (
+        respuesta.status === 401 ||
+        respuesta.status === 403
+      ) {
+        regresarAlLogin();
+ 
+        throw new Error(
+          'La sesión ha expirado'
+        );
+      }
+ 
+      let datos = {};
+ 
+      try {
+        datos = await respuesta.json();
+ 
+      } catch (error) {
+        datos = {};
+      }
+ 
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.error ||
+          'No fue posible completar la operación'
+        );
+      }
+ 
+      return datos;
+    }
+ 
+ 
+    function mostrarDatosUsuario(usuario) {
+      elementoCargando.hidden = true;
+      contenedorDatos.hidden = false;
+ 
+      const nombre =
+        usuario.nombre || 'Usuario';
+ 
+      nombreHeader.textContent = nombre;
+ 
+      tituloBienvenida.textContent =
+        'Bienvenido, ' + nombre;
+ 
+      document.getElementById(
+        'usuario-id'
+      ).textContent = usuario._id || 'No disponible';
+ 
+      document.getElementById(
+        'usuario-nombre'
+      ).textContent = nombre;
+ 
+      document.getElementById(
+        'usuario-email'
+      ).textContent = usuario.email || 'No disponible';
+ 
+      document.getElementById(
+        'usuario-fecha'
+      ).textContent = formatearFecha(
+        usuario.fechaRegistro
+      );
+    }
+ 
+ 
+    function formatearFecha(fecha) {
+      if (!fecha) {
+        return 'No disponible';
+      }
+ 
+      const fechaConvertida = new Date(fecha);
+ 
+      if (Number.isNaN(fechaConvertida.getTime())) {
+        return 'No disponible';
+      }
+ 
+      return fechaConvertida.toLocaleString('es-CR');
+    }
+ 
+ 
+    function cerrarSesion() {
+      localStorage.removeItem('token');
+ 
+      window.location.replace('login.html');
+    }
+ 
+ 
+    function regresarAlLogin() {
+      localStorage.removeItem('token');
+ 
+      window.location.replace('login.html');
+    }
+ 
+ 
+    function mostrarMensaje(texto) {
+      mensaje.textContent = texto;
+    }
+  </script>
+</html>
