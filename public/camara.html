@@ -386,12 +386,19 @@ const modoEdicion = document.getElementById("modo-edicion");
       }
  
       try {
-        const respuesta = await fetch('/api/verificatoken', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
-        });
+        
+        console.log("Token:", obtenerToken());
+
+const headers = {
+    Authorization: "Bearer " + obtenerToken()
+};
+
+console.log(headers);
+
+const respuesta = await fetch(API_CAMARAS, {
+    method: "GET",
+    headers
+});
  
         if (!respuesta.ok) {
           regresarAlLogin();
@@ -465,15 +472,16 @@ const modoEdicion = document.getElementById("modo-edicion");
  
     async function guardarCamara() {
 
-          const formData = new FormData();
-formData.append("marca", marcaPicker.value);
-formData.append("modelo", modeloPicker.value);
-formData.append("tipo", tipoPicker.value);
-formData.append("formato", formatoPicker.value);
-formData.append("resolucion", resolucionPicker.value);
-formData.append("estado", estadoPicker.value);
-formData.append("precioEstimado", precioPicker.value);
-formData.append("observaciones", observacionesPicker.value);
+          const camara = obtenerCamaraActual();
+
+const respuesta = await fetch(url, {
+    method: metodo,
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + obtenerToken()
+    },
+    body: JSON.stringify(camara)
+});
 
 
 
