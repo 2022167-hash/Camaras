@@ -472,16 +472,6 @@ const respuesta = await fetch(API_CAMARAS, {
  
     async function guardarCamara() {
 
-      const camara = obtenerCamaraActual();
-
-const respuesta = await fetch(url, {
-    method: metodo,
-    headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + obtenerToken()
-    },
-    body: JSON.stringify(camara)
-});
 
       try {
         btnGuardar.disabled = true;
@@ -519,9 +509,11 @@ if (camara.precioEstimado <= 0) {
         const respuesta = await fetch(url, {
           method: metodo,
           headers: {
+    "Content-Type": "application/json",
     Authorization: "Bearer " + obtenerToken()
 },
-body: formData
+body: JSON.stringify(camara),
+          body: JSON.stringify(camara)
         });
  
         await procesarRespuesta(respuesta);
