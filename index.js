@@ -8,11 +8,6 @@ app.use(express.json());
 
 
 //++++++++++++++++++++++++++++++//
-const multer = require("multer");
-
-const upload = multer({
-    dest:"uploads/"
-});
 //++++++++++++++++++++++++++++++//
 
 // Middleware para parsear JSON en las peticiones (body-parser integrado)
@@ -22,7 +17,6 @@ const Camara = require('./camaraEsquema');
 const conectarBD = require("./conexion")
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static('uploads'));
 async function iniciarServidor() {
 await conectarBD();
 }
@@ -176,7 +170,6 @@ app.get('/api/camaras/:id', verificarToken, async (req, res) => {
 app.post(
 '/api/camaras',
 verificarToken,
-upload.single("miArchivo"),
 async (req,res)=>{
 
     console.log("Archivo recibido:");
@@ -213,11 +206,7 @@ async (req,res)=>{
 
             precioEstimado:Number(precioEstimado),
 
-            observaciones,
-
-            imagenUrl:req.file 
-                ? req.file.path 
-                : null
+            observaciones
         });
 
 
@@ -251,7 +240,6 @@ app.put('/api/camaras/:id', verificarToken, async (req, res) => {
       estado,
       precioEstimado,
       observaciones,
-      imagenUrl
     } = req.body;
  
     const camaraActualizada = await Camara.findOneAndUpdate(
@@ -267,7 +255,6 @@ app.put('/api/camaras/:id', verificarToken, async (req, res) => {
         estado,
         precioEstimado,
         observaciones,
-        imagenUrl
       },
       {
         new: true,
